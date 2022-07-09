@@ -3,7 +3,7 @@ from Modules.DB_Collections.users import Users
 import uuid
 
 class ShoppingItem(me.EmbeddedDocument):
-    id = me.StringField(default=uuid.uuid4)
+    id = me.StringField(default=str(uuid.uuid4))
     name = me.StringField()
     amount = me.IntField()
     unit = me.StringField()
