@@ -18,6 +18,10 @@ me.connect(db=os.getenv("MONGO_DB"),
            password=os.getenv("MONGO_PASSWORD"),
            host=os.getenv("MONGO_HOST"))
 
+@app.route("/")
+def send_app():
+    return app.send_static_file("index.html")
+
 @app.errorhandler(404)
 def not_fount(error):
     return app.send_static_file("index.html")
