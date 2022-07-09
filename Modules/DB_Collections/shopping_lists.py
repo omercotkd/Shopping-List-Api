@@ -8,9 +8,10 @@ class ShoppingItem(me.EmbeddedDocument):
     amount = me.IntField()
     unit = me.StringField()
     link = me.StringField()
+    priority = me.IntField()
 
 
-class shoppinglists(me.Document):
+class Shoppinglists(me.Document):
     owners = me.ListField(me.ReferenceField(Users))
     items = me.EmbeddedDocumentListField(ShoppingItem)
     name = me.StringField()

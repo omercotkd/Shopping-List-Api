@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
 from Modules.Decorators.require_shopping_list import require_shopping_list
 from Modules.Decorators.content_type import check_content_type
-from Modules.DB_Collections.shopping_lists import shoppinglists, ShoppingItem
+from Modules.DB_Collections.shopping_lists import Shoppinglists, ShoppingItem
 from Modules.Validtors.instance import check_value_and_instance
 
 
@@ -19,7 +19,7 @@ def create_new_shopping_list():
     if not check_value_and_instance(name, str):
         return jsonify({"error": "name"}), 400
 
-    new_list = shoppinglists(
+    new_list = Shoppinglists(
         name = name
     )
 
@@ -38,13 +38,14 @@ def get_shopping_list(shopping_list_dict: dict):
 @manage_lists_routes.route("/item", methods=["POST"])
 @check_content_type("application/json")
 @require_shopping_list
-def add_item_to_list(shopping_list: shoppinglists):
+def add_item_to_list(shopping_list: Shoppinglists):
 
     json_ = request.json
 
     name = json_.get("name")
     amount = json_.get("amount")
     unit = json_.get("unit")
+    priority = json_.get("priority")
 
     if not check_value_and_instance(name, str):
         return jsonify({"error": "name"}), 400
@@ -52,14 +53,19 @@ def add_item_to_list(shopping_list: shoppinglists):
         return jsonify({"error": "amount"}), 400
     elif not check_value_and_instance(unit, str):
         return jsonify({"error": "unit"}), 400
+    elif not check_value_and_instance(priority, int):
+        return jsonify({"error": "priority"}), 400
 
     if not amount > 0:
         return jsonify({"error": "amount need to be positive"}), 400
+    elif not 0 <= priority < 3:
+        return jsonify({"error": "priority not in range [0, 3]"}), 400
 
     new_item = ShoppingItem(
         name = name,
         amount = amount,
-        unit = unit
+        unit = unit, 
+        priority = priority
     )
 
     shopping_list.items.append(new_item)
@@ -71,14 +77,21 @@ def add_item_to_list(shopping_list: shoppinglists):
 
 @manage_lists_routes.route("/item", methods=["DELETE"])
 @require_shopping_list
-def delete_item_from_list(shopping_list: shoppinglists):
+def delete_item_from_list(shopping_list: Shoppinglists):
 
     item_id = request.args.get("item_id")
 
     if not item_id:
         return jsonify({"error": "item_id"}), 404
 
-    shoppinglists.objects(id=shopping_list.id).update()
+    Shoppinglists._get_collection().find_one_and_update(
+            filter={'_id': shopping_list.id},
+            update={'$pull': {
+                "items": {
+                    "id": item_id
+                }
+            }}
+        )
 
-    return ""
+    return jsonify({"massage": "updated"})
 

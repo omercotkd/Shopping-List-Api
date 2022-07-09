@@ -1,6 +1,6 @@
 from functools import wraps
 import inspect
-from Modules.DB_Collections.shopping_lists import shoppinglists
+from Modules.DB_Collections.shopping_lists import Shoppinglists
 from Modules.Validtors.valid_obi import valid_object_id
 from Modules.Aggregitons.add_fields import _id_to_string
 from Modules.Aggregitons.unset import unset_fields
@@ -21,7 +21,7 @@ def require_shopping_list(func):
 
         if "shopping_list" in func_args:
 
-            shopping_list = shoppinglists.objects(id=list_id)
+            shopping_list = Shoppinglists.objects(id=list_id)
 
             shopping_list = list(shopping_list)
 
@@ -34,7 +34,7 @@ def require_shopping_list(func):
 
         if "shopping_list_dict" in func_args:
 
-            shopping_list = shoppinglists.objects(id=list_id).aggregate(
+            shopping_list = Shoppinglists.objects(id=list_id).aggregate(
                 [
                     _id_to_string(),
                     unset_fields(["_id"])
