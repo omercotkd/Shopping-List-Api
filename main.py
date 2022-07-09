@@ -3,10 +3,12 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from flask import Flask
+from flask_cors import CORS
 import mongoengine as me
 import os
 
 app = Flask(__name__)
+CORS(app)
 
 me.connect(db=os.getenv("MONGO_DB"),
            username=os.getenv("MONGO_USERNAME"),

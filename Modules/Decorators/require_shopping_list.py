@@ -12,7 +12,7 @@ def require_shopping_list(func):
 
         params_ = request.args
 
-        list_id = params_.get("list_id", "62c980c8248273db37f14e98")
+        list_id = params_.get("list_id", "62c98bdcc1916b684be0d836")
 
         if not valid_object_id(list_id):
             return jsonify({"error": "list id"}), 400

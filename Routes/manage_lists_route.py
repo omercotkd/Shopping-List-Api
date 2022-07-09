@@ -5,7 +5,7 @@ from Modules.DB_Collections.shopping_lists import Shoppinglists, ShoppingItem
 from Modules.Validtors.instance import check_value_and_instance
 
 
-manage_lists_routes = Blueprint("manage_lists_routes", __name__, url_prefix="/api/shoping-list")
+manage_lists_routes = Blueprint("manage_lists_routes", __name__, url_prefix="/api/shopping-list")
 
 
 @manage_lists_routes.route("", methods=["POST"])
@@ -53,7 +53,7 @@ def add_item_to_list(shopping_list: Shoppinglists):
         return jsonify({"error": "amount"}), 400
     elif not check_value_and_instance(unit, str):
         return jsonify({"error": "unit"}), 400
-    elif not check_value_and_instance(priority, int):
+    elif not isinstance(priority, int):
         return jsonify({"error": "priority"}), 400
 
     if not amount > 0:
@@ -76,19 +76,22 @@ def add_item_to_list(shopping_list: Shoppinglists):
 
 
 @manage_lists_routes.route("/item", methods=["DELETE"])
+@check_content_type("application/json")
 @require_shopping_list
 def delete_item_from_list(shopping_list: Shoppinglists):
 
-    item_id = request.args.get("item_id")
+    json_ = request.json
 
-    if not item_id:
-        return jsonify({"error": "item_id"}), 404
+    items_ids = json_.get("items_ids")
+
+    if not check_value_and_instance(items_ids, list):
+        return jsonify({"error": "items ids"}), 400
 
     Shoppinglists._get_collection().find_one_and_update(
             filter={'_id': shopping_list.id},
             update={'$pull': {
                 "items": {
-                    "id": item_id
+                    "id": {"$in": items_ids}
                 }
             }}
         )
