@@ -1,9 +1,9 @@
 import mongoengine as me
 from Modules.DB_Collections.users import Users
-import uuid
+from Controllers.ids_genertors import random_string_id
 
 class ShoppingItem(me.EmbeddedDocument):
-    id = me.StringField(default=str(uuid.uuid4))
+    id = me.StringField(default=random_string_id)
     name = me.StringField()
     amount = me.IntField()
     unit = me.StringField()
