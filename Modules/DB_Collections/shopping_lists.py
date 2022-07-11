@@ -1,6 +1,6 @@
 import mongoengine as me
 from Modules.DB_Collections.users import Users
-from Controllers.ids_genertors import random_string_id
+from UsefulFunctions.ids_genertors import random_string_id
 
 class ShoppingItem(me.EmbeddedDocument):
     id = me.StringField(default=random_string_id)

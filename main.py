@@ -29,6 +29,8 @@ def not_fount(error):
 # Routes
 from Routes.login_route import login_routes
 from Routes.manage_lists_route import manage_lists_routes
+from Routes.registration_routes import registration_routes
 
 app.register_blueprint(login_routes)
 app.register_blueprint(manage_lists_routes)
+app.register_blueprint(registration_routes)
