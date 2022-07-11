@@ -58,8 +58,8 @@ def add_item_to_list(shopping_list: Shoppinglists):
 
     if not amount > 0:
         return jsonify({"error": "amount need to be positive"}), 400
-    elif not 0 <= priority < 3:
-        return jsonify({"error": "priority not in range [0, 3]"}), 400
+    elif not 0 <= priority < 7:
+        return jsonify({"error": "priority not in range [0, 7]"}), 400
 
     new_item = ShoppingItem(
         name = name,
